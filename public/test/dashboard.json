@@ -1,0 +1,52 @@
+{
+    "xAxisData": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun"
+    ],
+    "Income": {
+      "series": {
+        "IncomeData": [
+          6633,
+          8980,
+          3867,
+          6781,
+          6765,
+          6001
+        ]
+      }
+    },
+    "Expense": {
+      "series": {
+        "ExpenseData": [
+          4324,
+          5753,
+          2130,
+          3670,
+          7384,
+          4761
+        ]
+      }
+    },
+    "plans": [
+      {
+        "id": "1",
+        "name": "Singapore Trip",
+        "target": 5000,
+        "current": 3500,
+        "beginDate": "2024-03-01T12:00:00Z",
+        "description":"In the quiet village of Willowbrook, beneath the shade of ancient oaks, an unusual festival took place every year. It wasn't marked by the usual fanfare of parades or fireworks. Instead, the villagers gathered at dusk, each carrying a single, hand-painted lantern. As twilight deepened, they would release these lanterns into the river that ran through the heart of the village. The lanterns, glowing softly against the darkening sky, carried wishes and dreams of the townsfolk as they meandered towards the horizon. It was said that if your lantern's light stayed bright until it vanished from sight, your wish would come true within the year."
+      },
+      {
+        "id": "2",
+        "name": "Singapore Trip",
+        "target": 5000,
+        "current": 3500,
+        "beginDate": "2024-03-01T12:00:00Z",
+        "description":"In the quiet village of Willowbrook, beneath the shade of ancient oaks, an unusual festival took place every year. It wasn't marked by the usual fanfare of parades or fireworks. Instead, the villagers gathered at dusk, each carrying a single, hand-painted lantern. As twilight deepened, they would release these lanterns into the river that ran through the heart of the village. The lanterns, glowing softly against the darkening sky, carried wishes and dreams of the townsfolk as they meandered towards the horizon. It was said that if your lantern's light stayed bright until it vanished from sight, your wish would come true within the year."
+      }
+    ]
+  }
