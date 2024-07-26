@@ -5,31 +5,30 @@
 <script>
 // import { onMounted } from 'vue'
 export default {
-  props:{
+  props: {
     message: {
       type: String,
-      default: "default message"
-    }
+      default: "default message",
+    },
   },
-  data(){
-    return{
-      show:true
-    }
+  data() {
+    return {
+      show: true,
+    };
   },
-  methods:{
-    destroy(){
-      console.log("destroying...")
-      this.$store.state.promptStatus=false
-    }
+  methods: {
+    destroy() {
+      this.$store.state.promptStatus = false;
+    },
   },
-  mounted(){
-    setTimeout(this.destroy,1500)
-  }
-}
+  mounted() {
+    setTimeout(this.destroy, 1500);
+  },
+};
 </script>
 
 <style scoped>
-.prompt{
+.prompt {
   display: flex;
   width: 30%;
   min-height: 10vh;
@@ -40,7 +39,7 @@ export default {
   left: 35%;
   padding: 1rem;
   z-index: 999999;
-  background: #FF8080;
+  background: #ff8080;
   border-radius: 1.5rem;
   color: wheat;
 }

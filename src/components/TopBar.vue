@@ -75,7 +75,9 @@ export default {
       const path = to.fullPath.split("/");
       if (path[1] === "dashboard") this.currentScreen = "dashboard";
       else if (path[1] === "plans") this.currentScreen = "budget plans";
-      else if (path[1] === "money")this.currentScreen = "income & expense";
+      else if (path[1] === "money") this.currentScreen = "income & expense";
+      else if (path[1] === "login") this.currentScreen = "login";
+      else if (path[1] === "register") this.currentScreen = "register";
       else this.currentScreen = "settings";
     },
   },

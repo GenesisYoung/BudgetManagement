@@ -15,6 +15,13 @@ export default {
       return this.$store.state.promptStatus;
     },
   },
+  methods: {
+    acceptCookie() {
+      console.log("accept");
+      this.$setCookie("cookiesAccepted", "true", 3650);
+      document.getElementById("cookieConsent").style.display = "none";
+    },
+  },
 };
 </script>
 
@@ -26,9 +33,32 @@ export default {
   <transition name="prompt">
     <the-prompt v-if="promptStatus" :message="promptMsg"></the-prompt>
   </transition>
+  <div id="cookieConsent">
+    This website uses cookies to ensure you get the best experience on our
+    website.
+    <button @click="acceptCookie()">Accept</button>
+  </div>
 </template>
 
 <style scoped>
+#cookieConsent {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #333;
+  color: #fff;
+  padding: 15px;
+  text-align: center;
+  display: none;
+  z-index: 1000;
+}
+#cookieConsent button {
+  background: #f1d600;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
 .prompt-enter-active,
 .prompt-leave-active {
   transition: opacity 0.75s ease;
