@@ -87,8 +87,13 @@ export default {
         })
         .then((response) => {
           debugger;
-          if (response.data.data) {
-            this.$setCookie("loginStatus", response.data, 30);
+          console.log(response.data);
+          if (response.data.data.loginStatus) {
+            debugger;
+            this.$setCookie("loginStatus", response.data.data.loginStatus, 30);
+            this.$setCookie("username", response.data.data.username, 30);
+            this.$setCookie("userId", response.data.data.userId, 30);
+            debugger;
             this.errorMessage = "";
             this.$router.push("/dashboard");
           } else {

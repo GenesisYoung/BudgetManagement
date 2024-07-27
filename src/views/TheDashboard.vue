@@ -3,39 +3,14 @@ import IncomeExpense from "../charts/IncomeExpense.vue";
 import PlansProgress from "../charts/PlansProgress.vue";
 export default {
   async beforeMount() {
-    const response = await fetch('/public/test/dashboard.json');
-    const result = await response.json();
-    const surplus=result.Income.series.IncomeData.map((income,idx)=>{
-      return income-result.Expense.series.ExpenseData[idx]
-    })
-
-    this.all.xAxis[0].data=result.xAxisData
-    this.all.series[0].data=result.Income.series.IncomeData
-    this.all.series[1].data=result.Expense.series.ExpenseData
-    this.all.series[2].data=surplus
-
-    this.income.xAxis[0].data=result.xAxisData
-    this.income.series[0].data=result.Income.series.IncomeData
-
-    this.expense.xAxis[0].data=result.xAxisData
-    this.expense.series[0].data=result.Expense.series.ExpenseData
-
-    this.surplus.xAxis[0].data=result.xAxisData
-    this.surplus.series[0].data=surplus
-
-    this.$store.state.fullChartOption=this.all
-    this.$store.state.incomeChartOption=this.income
-    this.$store.state.expenseChartOption=this.expense
-    this.$store.state.surplusChartOption=this.surplus
-
-    this.incomeExpense=this.$store.state.fullChartOption
-
-    this.$store.state.plans=result.plans
-    this.dataReady=true
+    this.fetchAlpha().then(() => {
+      this.fetchBeta().then(() => {
+        this.dataReady = true;
+      });
+    });
   },
   methods: {
     toogleChart(number) {
-      console.log("toogleChart", number);
       if (number == 0) {
         this.incomeExpense = this.$store.state.fullChartOption;
       } else if (number == 1) {
@@ -47,6 +22,76 @@ export default {
       }
       this.loadkey++;
     },
+    async fetchAlpha() {
+      const id = this.$getCookie("userId");
+      const pageAlpha = this.$store.state.dashboardPageAlpha;
+      this.axios
+        .get(
+          "http://localhost:8080/dashboard/fetchData?page=" +
+            pageAlpha +
+            "&id=" +
+            id
+        )
+        .then((response) => {
+          const result = response.data.data;
+          if (result) {
+            const surplus = result.Income.series.IncomeData.map(
+              (income, idx) => {
+                return income - result.Expense.series.ExpenseData[idx];
+              }
+            );
+
+            this.alphaTotal = result.total;
+            this.all.xAxis[0].data = result.xAxisData;
+            this.all.series[0].data = result.Income.series.IncomeData;
+            this.all.series[1].data = result.Expense.series.ExpenseData;
+            this.all.series[2].data = surplus;
+
+            this.income.xAxis[0].data = result.xAxisData;
+            this.income.series[0].data = result.Income.series.IncomeData;
+
+            this.expense.xAxis[0].data = result.xAxisData;
+            this.expense.series[0].data = result.Expense.series.ExpenseData;
+
+            this.surplus.xAxis[0].data = result.xAxisData;
+            this.surplus.series[0].data = surplus;
+
+            this.$store.state.fullChartOption = this.all;
+            this.$store.state.incomeChartOption = this.income;
+            this.$store.state.expenseChartOption = this.expense;
+            this.$store.state.surplusChartOption = this.surplus;
+
+            this.incomeExpense = this.$store.state.fullChartOption;
+            this.dataAlpha = true;
+          }
+        });
+    },
+    async fetchBeta() {
+      const id = this.$getCookie("userId");
+      const pageBeta = this.$store.state.dashboardPageBeta;
+      this.axios
+        .get(
+          "http://localhost:8080/budgetPlan/fetchBudgetPlans?page=" +
+            pageBeta +
+            "&id=" +
+            id
+        )
+        .then((response) => {
+          this.$store.state.plans = response.data.data;
+          if (response.data.data.length > 0) {
+            this.dataBeta = true;
+            this.betaTotal = response.data.data[0].total;
+          } else this.dataBeta = false;
+        });
+    },
+    lastPlan() {
+      this.$store.state.dashboardPageBeta--;
+      this.fetchBeta();
+    },
+    nextPlan() {
+      this.$store.state.dashboardPageBeta++;
+      this.fetchBeta();
+    },
   },
   components: {
     IncomeExpense,
@@ -54,10 +99,13 @@ export default {
   },
   data() {
     return {
-      dataReady:false,
+      alphaTotal: 0,
+      betaTotal: 0,
+      dataAlpha: false,
+      dataBeta: false,
+      dataReady: false,
       loadkey: 1,
       incomeExpense: {},
-
       all: {
         grid: {
           left: "10%", // Distance from the left edge of the container
@@ -383,20 +431,28 @@ export default {
           },
         ],
       },
-
     };
   },
-  computed:{
-    plans(){
-      return this.$store.state.plans
-    }
-  }
+  computed: {
+    plans() {
+      return this.$store.state.plans;
+    },
+    pageBeta() {
+      return this.$store.state.dashboardPageBeta;
+    },
+    lastValidate() {
+      return this.$store.state.dashboardPageBeta <= 1;
+    },
+    nextValidate() {
+      return this.betaTotal == this.$store.state.dashboardPageBeta;
+    },
+  },
 };
 </script>
 
 <template>
   <div class="dashboard" v-if="dataReady">
-    <div class="income-expense">
+    <div class="income-expense" v-if="dataAlpha">
       <income-expense
         :grid="incomeExpense.grid"
         :legend="incomeExpense.legend"
@@ -406,6 +462,7 @@ export default {
         :xAxis="incomeExpense.xAxis"
         :yAxis="incomeExpense.yAxis"
         :key="loadkey"
+        v-if="dataAlpha"
       ></income-expense>
       <div class="btns">
         <button class="all" @click="toogleChart(0)">
@@ -426,9 +483,10 @@ export default {
         </button>
       </div>
     </div>
+    <div class="income-expense no-data" v-else>no data available!</div>
     <div class="budget-plans">
-      <h2>budget plans</h2>
-      <div class="list-container">
+      <h2>budget plan</h2>
+      <div class="list-container" v-if="dataBeta">
         <plans-progress
           v-for="plan in plans"
           :id="plan.id"
@@ -438,7 +496,31 @@ export default {
           :target="plan.target"
           :beginDate="plan.beginDate"
         ></plans-progress>
+        <div class="desc">
+          <span class="desc-title">Description:</span>{{ plans[0].description }}
+        </div>
+        <div class="btns-container">
+          <button
+            :class="{ btn: true, last: true, inactive: lastValidate }"
+            :disabled="lastValidate"
+            @click="lastPlan()"
+          >
+            Last plan
+          </button>
+          <div class="index">
+            <span class="pageNum">{{ pageBeta }}</span>
+          </div>
+          <button
+            ref="next"
+            :class="{ btn: true, last: true, inactive: nextValidate }"
+            :disabled="nextValidate"
+            @click="nextPlan()"
+          >
+            Next plan
+          </button>
+        </div>
       </div>
+      <div class="list-container no-data" v-else>No budget plans yet!</div>
     </div>
   </div>
   <div class="dashboard" v-else>
@@ -447,6 +529,48 @@ export default {
 </template>
 
 <style scoped>
+.desc {
+  margin-top: 1rem;
+  font-size: 1rem;
+  width: 100%;
+  height: 4.5rem;
+  overflow: auto;
+  color: #b692c2;
+}
+.desc-title {
+  color: #694f8e;
+}
+.btns-container {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin-top: 1rem;
+}
+.index {
+  display: flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  background: #ffdfd6;
+  color: #b692c2;
+}
+.pageNum {
+  font-size: 0.85rem;
+}
+.last,
+.next {
+  font-size: 0.85rem;
+  color: #694f8e;
+}
+.no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5b3674;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
 .dashboard {
   width: 100%;
   display: flex;
@@ -474,7 +598,6 @@ export default {
   background: #faf0e6;
   overflow: hidden;
   z-index: 2;
-
 }
 .income,
 .expense,
@@ -502,10 +625,11 @@ export default {
   margin-top: 1.25rem;
 }
 @media (max-width: 760px) {
-  .dashboard{
+  .dashboard {
     align-content: space-around;
   }
-  .income-expense,.budget-plans{
+  .income-expense,
+  .budget-plans {
     width: 100%;
     height: 45%;
   }
@@ -517,7 +641,7 @@ export default {
     height: 2rem;
     font-size: 0.15rem;
   }
-  .caption{
+  .caption {
     display: none;
   }
   .budget-plans {

@@ -28,24 +28,23 @@
 <script>
 export default {
   mounted() {
-    const barId=this.barId
+    const barId = this.barId;
     const bar = document.getElementById(barId);
-    bar.style.width="80%"
-    bar.style.borderRadius="0.15rem"
-    bar.style.height="1rem"
-    bar.style.backgroundColor="#FFD1E3"
+    bar.style.width = "80%";
+    bar.style.borderRadius = "0.15rem";
+    bar.style.height = "1rem";
+    bar.style.backgroundColor = "#FFD1E3";
     const progressElement = document.createElement("div");
-    progressElement.style.width = this.progress*100 + "%";
-    progressElement.style.borderRadius="0.15rem"
+    progressElement.style.width = this.progress * 100 + "%";
+    progressElement.style.borderRadius = "0.15rem";
     progressElement.style.height = "100%";
     progressElement.style.backgroundColor = "#3FA2F6";
     bar.append(progressElement);
-    console.log("enter bar",progressElement,bar)
   },
   props: {
-    id:{
-      required:true,
-      type:String
+    id: {
+      required: true,
+      type: String,
     },
     name: {
       required: true,
@@ -71,8 +70,8 @@ export default {
     },
   },
   computed: {
-    barId(){
-      return "progress-bar-"+this.id
+    barId() {
+      return "progress-bar-" + this.id;
     },
     progress() {
       if (this.current == 0) return 0;
@@ -86,28 +85,32 @@ export default {
         );
     },
     expectedDateShow() {
-      const millisecondsInMonth = 30 * 24 * 60 * 60 * 1000;
+      debugger;
+      if (this.current === 0) {
+        return "∞";
+      }
+      const millisecondsInDay = 24 * 60 * 60 * 1000;
       const beginDate = new Date(this.beginDate);
       const now = new Date();
       let passedTime = now.getTime() - beginDate.getTime();
-      passedTime = passedTime / millisecondsInMonth;
-      const contributionPerMonth = this.current / passedTime;
-      const restMonth = Number.parseInt(
-        (this.target - this.current) / contributionPerMonth
+      passedTime = passedTime / millisecondsInDay;
+      const contributionPerDay = this.current / passedTime;
+      const restDays = Number.parseInt(
+        (this.target - this.current) / contributionPerDay
       );
       const currentDate = new Date();
       const targetDate = new Date(currentDate);
 
-      targetDate.setMonth(targetDate.getMonth() + restMonth);
-      return `${targetDate.getMonth() + 1}/${
-        targetDate.getDay()
-      }/${targetDate.getFullYear()}`;
+      targetDate.setDate(targetDate.getDate() + restDays);
+      return `${
+        targetDate.getMonth() + 1
+      }/${targetDate.getDate()}/${targetDate.getFullYear()}`;
     },
     beginDateShow() {
       const beginDate = new Date(this.beginDate);
-      return `${beginDate.getMonth() + 1}/${
-        beginDate.getDay()
-      }/${beginDate.getFullYear()}`;
+      return `${
+        beginDate.getMonth() + 1
+      }/${beginDate.getDate()}/${beginDate.getFullYear()}`;
     },
     persentageShow() {
       return `$${Number.parseInt(this.current)}/$${Number.parseInt(
@@ -119,12 +122,12 @@ export default {
 </script>
 
 <style scoped>
-*{
+* {
   color: #e0dbe1;
-  font-family: 'San Francisco';
+  font-family: "San Francisco";
   font-size: 1rem;
 }
-header{
+header {
   padding: 0.5rem;
   font-weight: bolder;
   color: white;
@@ -135,7 +138,7 @@ header{
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  background-color: #A367B1;
+  background-color: #a367b1;
   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.75);
   padding: 1.5rem;
   border-radius: 0.5rem;
@@ -155,25 +158,25 @@ header{
   display: flex;
   justify-content: space-between;
 }
-.persentage{
-    padding: 0.5rem;
-    font-size: 0.75rem;
-    color: #FFF7FC;
-    border-radius: 50%;
-    background: #846298;
-    text-align: center;
+.persentage {
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  color: #fff7fc;
+  border-radius: 50%;
+  background: #846298;
+  text-align: center;
 }
-footer{
+footer {
   width: 100%;
 }
-.current-target{
+.current-target {
   width: 100%;
   text-align: right;
 }
-.bar{
+.bar {
   position: relative !important;
 }
-.bar span{
+.bar span {
   position: absolute;
   color: white;
   left: 40%;

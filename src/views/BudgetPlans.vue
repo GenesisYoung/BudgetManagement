@@ -6,34 +6,103 @@ export default {
     BudgetPlan,
   },
   async beforeMount() {
-    const response = await fetch("/public/test/dashboard.json");
-    const result = await response.json();
-    this.$store.state.plans = result.plans;
-    this.plans = this.$store.state.plans;
-    this.dataFetched = true;
+    this.fetData();
+  },
+  updated() {
+    this.fetData();
   },
   data() {
     return {
       plans: [],
       dataFetched: false,
-      countSign:1
+      countSign: 1,
+      page: 1,
+      hasData: false,
+      total: 0,
     };
   },
   methods: {
-    deletePlan(id) {
-      if (this.$store.state.plans)
-        this.$store.state.plans = this.$store.state.plans.filter((plan) => {
-          return plan.id != id;
+    lastPlan() {
+      this.page--;
+      this.fetData();
+    },
+    nextPlan() {
+      this.page++;
+      this.fetData();
+    },
+    async fetData() {
+      const id = this.$getCookie("userId");
+      const page = this.page;
+      this.axios
+        .get(
+          "http://localhost:8080/budgetPlan/fetchBudgetPlans?page=" +
+            page +
+            "&id=" +
+            id
+        )
+        .then((response) => {
+          this.$store.state.editPlans = response.data.data;
+          this.plans = this.$store.state.editPlans;
+          if (this.plans.length > 0) {
+            this.hasData = true;
+            this.total = this.plans[0].total;
+          } else this.hasData = false;
+          this.dataFetched = true;
         });
-      this.plans=this.$store.state.plans
-    }
+    },
+    async deletePlan(id) {
+      this.axios
+        .get("http://localhost:8080/budgetPlan/deletePlan?id=" + id)
+        .then((response) => {
+          if (response.data.data) {
+            this.fetData();
+          }
+        });
+    },
+    addPlan() {
+      const currentPath = this.$route.path;
+      this.$router.push(`${currentPath}/plan/add`);
+    },
+  },
+  computed: {
+    lastValidate() {
+      return this.page <= 1;
+    },
+    nextValidate() {
+      return this.total == this.page;
+    },
+    updateKey() {
+      return this.$store.state.updateBudgetPlan;
+    },
   },
 };
 </script>
 <template>
-  <div class="plans-container" v-if="dataFetched" :sign="countSign">
+  <div
+    class="plans-container"
+    v-if="dataFetched"
+    :sign="countSign"
+    :change="updateKey"
+  >
     <h2 id="title">budget plans</h2>
-    <div class="data-panel">
+    <div class="add-container">
+      <button
+        :class="{ btn: true, 'prev-page': true, inactive: lastValidate }"
+        :disabled="lastValidate"
+        @click="lastPlan()"
+      >
+        Last plan
+      </button>
+      <button class="add-plan btn" @click="addPlan()">Add Plan</button>
+      <button
+        :class="{ btn: true, 'next-page': true, inactive: lastValidate }"
+        :disabled="nextValidate"
+        @click="nextPlan()"
+      >
+        Next plan
+      </button>
+    </div>
+    <div class="data-panel" v-if="hasData">
       <budget-plan
         v-for="plan in plans"
         :key="plan.id"
@@ -46,6 +115,7 @@ export default {
         @deletePlan="deletePlan"
       ></budget-plan>
     </div>
+    <div class="data-panel no-data" v-else>no budget plans yet</div>
     <div class="edit-panel">
       <RouterView></RouterView>
     </div>
@@ -56,6 +126,29 @@ export default {
 </template>
 
 <style scoped>
+.no-data {
+  margin-top: 5%;
+  color: #5b3674;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.btn {
+  margin: 0 0.75rem !important;
+}
+.add-plan {
+  background: #694f8e;
+  color: wheat;
+}
+.prev-page,
+.next-page {
+  font-size: 0.75rem;
+  color: #b692c2;
+}
+.add-container {
+  width: 100%;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
 .loading {
   width: 100%;
   height: 100%;
@@ -76,6 +169,7 @@ export default {
   position: relative;
   flex-wrap: wrap;
   justify-items: flex-start;
+  overflow: hidden;
 }
 h3 {
   color: wheat;

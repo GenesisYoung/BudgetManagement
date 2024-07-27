@@ -1,4 +1,4 @@
-*{
+* {
   margin: 0px;
   padding: 0px;
   text-transform: capitalize;
@@ -7,11 +7,11 @@
   text-align: center;
 }
 
-#app{
+#app {
   width: 100%;
   height: 100vh;
 }
-#container{
+#container {
   position: relative;
   width: 100%;
   height: 90vh;
@@ -19,8 +19,8 @@
   justify-content: center;
   background-color: #e0dbe1;
 }
-.shadow{
-  box-shadow: 0 .25rem .3rem rgba(0, 0, 0, 0.7);
+.shadow {
+  box-shadow: 0 0.25rem 0.3rem rgba(0, 0, 0, 0.7);
 }
 /* #container::before {
   content: '';
@@ -37,15 +37,15 @@
   z-index: 1;
 } */
 
-.active{
-  color: white!important;
-  border-radius:.3rem ;
+.active {
+  color: white !important;
+  border-radius: 0.3rem;
 }
 
 /* For the entire scrollbar */
 ::-webkit-scrollbar {
-  width: .5rem; /* Width of the scrollbar */
-  height: .5rem; /* Height of the scrollbar */
+  width: 0.5rem; /* Width of the scrollbar */
+  height: 0.5rem; /* Height of the scrollbar */
 }
 
 /* For the track (background of the scrollbar) */
@@ -72,14 +72,20 @@
 }
 
 /* Hide scrollbar for other browsers */
-body, html {
-  overflow: -moz-scrollbars-none;  /* Firefox */
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+body,
+html {
+  overflow: -moz-scrollbars-none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* Ensure the scrollbar area is still interactable */
 body::-webkit-scrollbar {
   width: 0px;
   background: transparent; /* make scrollbar transparent */
+}
+.inactive {
+  color: #9ca986 !important;
+  /* background: #9ca986 !important; */
+  border: 0px !important;
 }
