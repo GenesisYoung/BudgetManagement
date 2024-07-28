@@ -70,6 +70,9 @@ export default {
     },
   },
   computed: {
+    currency() {
+      return this.$store.state.currency;
+    },
     barId() {
       return "progress-bar-" + this.id;
     },
@@ -113,9 +116,9 @@ export default {
       }/${beginDate.getDate()}/${beginDate.getFullYear()}`;
     },
     persentageShow() {
-      return `$${Number.parseInt(this.current)}/$${Number.parseInt(
-        this.target
-      )}`;
+      return `${this.currency + Number.parseInt(this.current)}/${
+        this.currency + Number.parseInt(this.target)
+      }`;
     },
   },
 };

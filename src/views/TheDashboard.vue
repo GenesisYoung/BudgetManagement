@@ -42,19 +42,24 @@ export default {
             );
 
             this.alphaTotal = result.total;
+
             this.all.xAxis[0].data = result.xAxisData;
             this.all.series[0].data = result.Income.series.IncomeData;
             this.all.series[1].data = result.Expense.series.ExpenseData;
             this.all.series[2].data = surplus;
+            this.all.currency = this.currency;
 
             this.income.xAxis[0].data = result.xAxisData;
             this.income.series[0].data = result.Income.series.IncomeData;
+            this.income.currency = this.currency;
 
             this.expense.xAxis[0].data = result.xAxisData;
             this.expense.series[0].data = result.Expense.series.ExpenseData;
+            this.expense.currency = this.currency;
 
             this.surplus.xAxis[0].data = result.xAxisData;
             this.surplus.series[0].data = surplus;
+            this.surplus.currency = this.currency;
 
             this.$store.state.fullChartOption = this.all;
             this.$store.state.incomeChartOption = this.income;
@@ -107,6 +112,7 @@ export default {
       loadkey: 1,
       incomeExpense: {},
       all: {
+        currency: "$",
         grid: {
           left: "10%", // Distance from the left edge of the container
           right: "10%",
@@ -186,7 +192,7 @@ export default {
             type: "bar",
             tooltip: {
               valueFormatter: function (value) {
-                return "$" + value;
+                return currency + value;
               },
             },
             itemStyle: {
@@ -199,7 +205,7 @@ export default {
             type: "bar",
             tooltip: {
               valueFormatter: function (value) {
-                return "$" + value;
+                return currency + value;
               },
             },
             itemStyle: {
@@ -212,7 +218,7 @@ export default {
             type: "line",
             tooltip: {
               valueFormatter: function (value) {
-                return "$" + value;
+                return currency + value;
               },
             },
             itemStyle: {
@@ -225,6 +231,7 @@ export default {
       },
 
       income: {
+        currency: "$",
         grid: {
           left: "10%", // Distance from the left edge of the container
           right: "10%",
@@ -279,7 +286,7 @@ export default {
             type: "bar",
             tooltip: {
               valueFormatter: function (value) {
-                return "$" + value;
+                return currency + value;
               },
             },
             itemStyle: {
@@ -291,6 +298,7 @@ export default {
       },
 
       expense: {
+        currency: "$",
         grid: {
           left: "10%", // Distance from the left edge of the container
           right: "10%",
@@ -345,7 +353,7 @@ export default {
             type: "bar",
             tooltip: {
               valueFormatter: function (value) {
-                return "$" + value;
+                return currency + value;
               },
             },
             itemStyle: {
@@ -357,6 +365,7 @@ export default {
       },
 
       surplus: {
+        currency: "$",
         grid: {
           left: "10%", // Distance from the left edge of the container
           right: "10%",
@@ -420,7 +429,7 @@ export default {
             type: "line",
             tooltip: {
               valueFormatter: function (value) {
-                return "$" + value;
+                return currency + value;
               },
             },
             itemStyle: {
@@ -434,6 +443,9 @@ export default {
     };
   },
   computed: {
+    currency() {
+      return this.$store.state.currency;
+    },
     plans() {
       return this.$store.state.plans;
     },

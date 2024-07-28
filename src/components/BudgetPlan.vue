@@ -8,8 +8,8 @@
         <header>{{ planTitle }}</header>
         <section>
           <p class="amount-bar">
-            <span>target total:{{ targetAmount }}</span>
-            <span>current amount:{{ currentAmount }}</span>
+            <span>target total:{{ currency + targetAmount }}</span>
+            <span>current amount:{{ currency + currentAmount }}</span>
           </p>
           <p class="description">
             {{ planDescription }}
@@ -51,6 +51,9 @@ export default {
     },
   },
   computed: {
+    currency() {
+      return this.$store.state.currency;
+    },
     targetAmount() {
       return `${this.target / 1000}k`;
     },

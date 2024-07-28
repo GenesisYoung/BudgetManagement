@@ -3,6 +3,9 @@ import { createStore } from "vuex";
 const store = createStore({
   state() {
     return {
+      // settings
+      periodStart: "10",
+      currency: "$",
       // dashboard chart options
       fullChartOption: {},
       incomeChartOption: {},

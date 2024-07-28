@@ -13,6 +13,7 @@
               class="form-control"
               id="name"
               v-model="plan.name"
+              placeholder="plan name(if not filled, will be named as default name)"
             />
           </div>
           <div class="padding"></div>
@@ -23,6 +24,7 @@
               class="form-control"
               id="target"
               v-model="plan.target"
+              @change="validateNumber()"
             />
           </div>
         </div>
@@ -37,6 +39,7 @@
               id="description"
               rows="6"
               v-model="plan.description"
+              placeholder="Write something about what this plans for, exact plan for that, and anything ablout it~"
             ></textarea>
           </div>
         </div>
@@ -68,6 +71,12 @@ export default {
     },
   },
   methods: {
+    validateNumber() {
+      debugger;
+      if (isNaN(this.plan.target)) {
+        this.plan.target = 0;
+      }
+    },
     submitPlan() {
       if (!this.plan.id) {
         const request = {

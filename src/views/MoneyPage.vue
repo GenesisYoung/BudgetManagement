@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <!-- <div class="income-expense"> -->
-    <div class="income">
+    <div class="income" v-if="!incomeNoData">
       <income-expense
         :grid="incomeOption.grid"
         :legend="incomeOption.legend"
@@ -15,7 +15,8 @@
         }"
       ></income-expense>
     </div>
-    <div class="expense">
+    <div class="income no-data" v-else>No data available!</div>
+    <div class="expense" v-if="!expenseNoData">
       <income-expense
         :grid="expenseOption.grid"
         :legend="expenseOption.legend"
@@ -29,9 +30,10 @@
         }"
       ></income-expense>
     </div>
+    <div class="expense no-data" v-else>No data available!</div>
     <!-- </div> -->
     <!-- <div class="expense-budget"> -->
-    <div class="expense-chart">
+    <div class="expense-chart" v-if="!dailyNoData">
       <income-expense
         :title="dailyOption.title"
         :tooltip="dailyOption.tooltip"
@@ -40,10 +42,16 @@
         :series="dailyOption.series"
       ></income-expense>
     </div>
+    <div class="expense-chart no-data" v-else>No data available!</div>
     <div class="data">
       <div class="data-form shadow">
         <div class="change-form mb-2">
-          <button class="btn text-capitalize change" @click.stop.prevent="toogleForm()" >{{ formName }}</button>
+          <button
+            class="btn text-capitalize change"
+            @click.stop.prevent="toogleForm()"
+          >
+            {{ formName }}
+          </button>
         </div>
         <div>
           <div class="term">budget period:<br />{{ period }}</div>
@@ -68,7 +76,10 @@
                 <input type="text" class="form-control" v-model="expense" />
               </div>
               <div class="col-5 mb-2 button">
-                <button @click.stop.prevent="addExpense()" class="btn text-capitalize add">
+                <button
+                  @click.stop.prevent="addExpense()"
+                  class="btn text-capitalize add"
+                >
                   add expense
                 </button>
               </div>
@@ -90,7 +101,10 @@
                 <input type="text" class="form-control" v-model="income" />
               </div>
               <div class="col-5 mb-2 button">
-                <button @click.stop.prevent="addIncome()" class="btn text-capitalize add">
+                <button
+                  @click.stop.prevent="addIncome()"
+                  class="btn text-capitalize add"
+                >
                   add income
                 </button>
               </div>
@@ -104,7 +118,9 @@
               />
             </div>
             <div class="col-4 button">
-              <button class="btn add-new-tag" @click.stop.prevent="addTag()">add tag</button>
+              <button class="btn add-new-tag" @click.stop.prevent="addTag()">
+                add tag
+              </button>
             </div>
             <div class="tags mt-2">
               <div
@@ -192,7 +208,9 @@ export default {
         this.residual -= this.expense;
       }
     },
-    addIncome() {},
+    addIncome() {
+      this.residual = parseFloat(this.residual) + parseFloat(this.income);
+    },
     addTag() {
       const exist = this.tags.filter((tag) => {
         return tag.trim() === this.newTag;
@@ -215,6 +233,9 @@ export default {
   },
   data() {
     return {
+      incomeNoData: true,
+      expenseNoData: true,
+      dailyNoData: true,
       dailyOption: {
         tooltip: {
           trigger: "item",
@@ -249,6 +270,7 @@ export default {
         ],
       },
       incomeOption: {
+        currency: "$",
         grid: {
           left: "10%", // Distance from the left edge of the container
           right: "10%",
@@ -303,7 +325,7 @@ export default {
             type: "line",
             tooltip: {
               valueFormatter: function (value) {
-                return "$" + value;
+                return currency + value;
               },
             },
             itemStyle: {
@@ -314,6 +336,7 @@ export default {
         ],
       },
       expenseOption: {
+        currency: "$",
         grid: {
           left: "10%", // Distance from the left edge of the container
           right: "10%",
@@ -368,7 +391,7 @@ export default {
             type: "line",
             tooltip: {
               valueFormatter: function (value) {
-                return "$" + value;
+                return currency + value;
               },
             },
             itemStyle: {
@@ -381,7 +404,7 @@ export default {
       period: "",
       totalBudget: 0,
       currencyType: "$",
-      formName: "set income",
+      formName: "set expense",
       residual: 0,
       expense: 0,
       income: 0,
@@ -391,10 +414,19 @@ export default {
       change: false,
     };
   },
+  computed: {
+    currency() {
+      return this.$store.state.currency;
+    },
+  },
 };
 </script>
 
 <style scoped>
+.no-data {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: #180161;
+}
 input {
   text-align: left;
 }

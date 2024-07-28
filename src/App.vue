@@ -70,4 +70,7 @@ export default {
   opacity: 0;
   /* height: 0px; */
 }
+#container {
+  overflow: auto;
+}
 </style>
