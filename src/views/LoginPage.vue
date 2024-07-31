@@ -80,7 +80,7 @@ export default {
       };
 
       this.axios
-        .post("http://localhost:8080/account/login", request, {
+        .post(`http://${this.$HOST}/account/login`, request, {
           headers: {
             "Content-Type": "application/json",
           },

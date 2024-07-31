@@ -35,7 +35,7 @@ export default {
       const page = this.page;
       this.axios
         .get(
-          "http://localhost:8080/budgetPlan/fetchBudgetPlans?page=" +
+          `http://${this.$HOST}/budgetPlan/fetchBudgetPlans?page=` +
             page +
             "&id=" +
             id
@@ -52,7 +52,7 @@ export default {
     },
     async deletePlan(id) {
       this.axios
-        .get("http://localhost:8080/budgetPlan/deletePlan?id=" + id)
+        .get(`http://${this.$HOST}/budgetPlan/deletePlan?id=` + id)
         .then((response) => {
           if (response.data.data) {
             this.fetData();

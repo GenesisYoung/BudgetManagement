@@ -38,6 +38,8 @@ const app = createApp(App);
 
 app.use(VueAxios, axios);
 
+app.config.globalProperties.$HOST = "localhost:8080";
+
 // define global methods start
 app.config.globalProperties.$setCookie = function setCookie(name, value, days) {
   let expires = "";

@@ -90,7 +90,7 @@ export default {
           isFinished: 0,
         };
         this.axios
-          .post("http://localhost:8080/budgetPlan/addPlan", request, {
+          .post(`http://${this.$HOST}/budgetPlan/addPlan`, request, {
             "Content-Type": "application/json",
           })
           .then((response) => {
@@ -117,7 +117,7 @@ export default {
         isFinished: 0,
       };
       this.axios
-        .post("http://localhost:8080/budgetPlan/updatePlan", request, {
+        .post(`http://${this.$HOST}/budgetPlan/updatePlan`, request, {
           "Content-Type": "application/json",
         })
         .then((response) => {

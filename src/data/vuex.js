@@ -6,6 +6,12 @@ const store = createStore({
       // settings
       periodStart: "10",
       currency: "$",
+      autoAllocation: true,
+      allocationRule: 1,
+      levelAlpha: 50,
+      levelBeta: 30,
+      levelSigma: 20,
+      // auto
       // dashboard chart options
       fullChartOption: {},
       incomeChartOption: {},

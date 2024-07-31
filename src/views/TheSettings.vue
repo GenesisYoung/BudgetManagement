@@ -134,16 +134,27 @@
 export default {
   mounted() {},
   data() {
-    return {
-      period: 10,
-      autoAllocation: 1,
-      allocationRule: 1,
-      alpha: 50,
-      beta: 30,
-      sigma: 20,
-    };
+    return {};
   },
   computed: {
+    period() {
+      return this.$store.state.periodStart;
+    },
+    autoAllocation() {
+      return this.$store.state.autoAllocation;
+    },
+    allocationRule() {
+      return this.$store.state.allocationRule;
+    },
+    alpha() {
+      return this.$store.state.levelAlpha;
+    },
+    beta() {
+      return this.$store.state.levelBeta;
+    },
+    sigma() {
+      return this.$store.state.levelSigma;
+    },
     evenMode() {
       return this.allocationRule == 1;
     },

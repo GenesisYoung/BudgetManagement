@@ -27,7 +27,7 @@ export default {
       const pageAlpha = this.$store.state.dashboardPageAlpha;
       this.axios
         .get(
-          "http://localhost:8080/dashboard/fetchData?page=" +
+          `http://${this.$HOST}/dashboard/fetchData?page=` +
             pageAlpha +
             "&id=" +
             id
@@ -76,7 +76,7 @@ export default {
       const pageBeta = this.$store.state.dashboardPageBeta;
       this.axios
         .get(
-          "http://localhost:8080/budgetPlan/fetchBudgetPlans?page=" +
+          `http://${this.$HOST}/budgetPlan/fetchBudgetPlans?page=` +
             pageBeta +
             "&id=" +
             id

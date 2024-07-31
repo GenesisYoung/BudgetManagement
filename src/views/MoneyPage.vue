@@ -55,7 +55,7 @@
         </div>
         <div>
           <div class="term">budget period:<br />{{ period }}</div>
-          <div class="total">budget:{{ currencyType + residual }}</div>
+          <div class="total">budget:{{ currency + residual }}</div>
           <div
             class="add-expense row mt-2 display-flex justify-content-center flex-wrap"
           >
@@ -169,7 +169,6 @@ export default {
     this.dailyOption.series[0].data = result.dailyOption.series.data;
     this.period = result.periodicBudget.period;
     this.totalBudget = result.periodicBudget.totalBudget;
-    this.currencyType = result.periodicBudget.currencyType;
     this.residual = result.periodicBudget.residual;
     this.tags = tags;
 
@@ -403,7 +402,6 @@ export default {
       },
       period: "",
       totalBudget: 0,
-      currencyType: "$",
       formName: "set expense",
       residual: 0,
       expense: 0,

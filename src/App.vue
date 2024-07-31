@@ -3,6 +3,9 @@ import { RouterView } from "vue-router";
 import TopBar from "./components/TopBar.vue";
 import ThePrompt from "@/components/ThePrompt.vue";
 export default {
+  async beforeMount() {
+    this.loadUserSettings();
+  },
   components: {
     TopBar,
     ThePrompt,
@@ -17,9 +20,26 @@ export default {
   },
   methods: {
     acceptCookie() {
-      console.log("accept");
       this.$setCookie("cookiesAccepted", "true", 3650);
       document.getElementById("cookieConsent").style.display = "none";
+    },
+    async loadUserSettings() {
+      const id = this.$getCookie("userId");
+      this.axios
+        .get(`http://${this.$HOST}/setting/findSettings?id=` + id)
+        .then((response) => {
+          if (response.data.data) {
+            const data = response.data.data;
+            console.log("auto allocation:");
+            this.$store.state.periodStart = data.periodStart;
+            this.$store.state.currency = data.currency;
+            this.$store.state.autoAllocation = data.autoAllocation;
+            this.$store.state.allocationRule = data.allocationRule;
+            this.$store.state.levelAlpha = data.levelAlpha;
+            this.$store.state.levelBeta = data.levelBeta;
+            this.$store.state.levelSigma = data.levelSigma;
+          }
+        });
     },
   },
 };

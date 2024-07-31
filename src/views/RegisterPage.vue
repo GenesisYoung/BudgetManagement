@@ -122,7 +122,7 @@ export default {
         };
 
         this.axios
-          .post("http://localhost:8080/account/register", request, {
+          .post(`http://${this.$HOST}/account/register`, request, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -160,7 +160,7 @@ export default {
       // debugger;
       if (!this.emailValidate()) return;
       this.axios
-        .get("http://localhost:8080/account/checkMail?email=" + this.email)
+        .get(`http://${this.$HOST}/account/checkMail?email=` + this.email)
         .then((response) => {
           // debugger;
           console.log(response.data.data);
