@@ -51,6 +51,10 @@ app.config.globalProperties.$setCookie = function setCookie(name, value, days) {
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
 };
 
+app.config.globalProperties.$deleteCookie = function (name) {
+  document.cookie = name + "=; Max-Age=-99999999;";
+};
+
 app.config.globalProperties.$getCookie = function getCookie(name) {
   let nameEQ = name + "=";
   let ca = document.cookie.split(";");
@@ -62,6 +66,26 @@ app.config.globalProperties.$getCookie = function getCookie(name) {
   return null;
 };
 
+app.config.globalProperties.$loadSettings = async () => {
+  const id = this.$getCookie("userId");
+  debugger;
+  this.axios
+    .get(`http://${this.$HOST}/setting/findSettings?id=` + id)
+    .then((response) => {
+      if (response.data.data) {
+        const data = response.data.data;
+        this.$store.state.settingId = data.id;
+        this.$store.state.periodStart = data.periodStart;
+        this.$store.state.currency = data.currency;
+        this.$store.state.autoAllocation = data.autoAllocation;
+        this.$store.state.allocationRule = data.allocationRule;
+        this.$store.state.levelAlpha = data.levelAlpha;
+        this.$store.state.levelBeta = data.levelBeta;
+        this.$store.state.levelSigma = data.levelSigma;
+        this.$store.state.accountId = data.accountId;
+      }
+    });
+};
 // define global methods end
 
 app.use(router);

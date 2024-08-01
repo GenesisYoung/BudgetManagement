@@ -3,7 +3,7 @@
     <header>welcome,{{ username }}</header>
     <div class="account-setting">
       <button class="btn change">Change password</button>
-      <button class="btn out">Log out</button>
+      <button class="btn out" @click="logOut()">Log out</button>
     </div>
     <div class="setting-panel">
       <div class="currency row mt-2">
@@ -16,7 +16,8 @@
             class="form-select"
             id="currency"
             ref="currency"
-            :value="currency"
+            v-model="currency"
+            :prop="currency"
           >
             <option value="$">US Dollar</option>
             <option value="¥">CNY</option>
@@ -123,7 +124,9 @@
           <button class="btn btn-primary">Allocate residuals</button>
         </div>
         <div class="save-settings mt-2">
-          <button class="btn save">Save settings</button>
+          <button class="btn save" @click="saveSettings()">
+            Save settings
+          </button>
         </div>
       </div>
     </div>
@@ -132,29 +135,109 @@
 
 <script>
 export default {
-  mounted() {},
-  data() {
-    return {};
+  async beforeMount() {
+    debugger;
+    await this.fetchSetting();
   },
+  methods: {
+    initializeLocalState() {
+      debugger;
+      this.period = this.$store.state.periodStart;
+      this.currency = this.$store.state.currency;
+      this.autoAllocation = this.$store.state.autoAllocation;
+      this.allocationRule = this.$store.state.allocationRule;
+      this.alpha = this.$store.state.levelAlpha;
+      this.beta = this.$store.state.levelBeta;
+      this.sigma = this.$store.state.levelSigma;
+    },
+    logOut() {
+      this.$deleteCookie("loginStatus");
+      this.$router.go({ name: "login" });
+    },
+    async fetchSetting() {
+      const id = this.$getCookie("userId");
+      this.axios
+        .get(`http://${this.$HOST}/setting/findSettings?id=` + id)
+        .then((response) => {
+          debugger;
+          if (response.data.data) {
+            debugger;
+            const data = response.data.data;
+            console.log(data);
+            this.$store.state.settingId = data.id;
+            this.$store.state.periodStart = data.periodStart;
+            this.$store.state.currency = data.currency;
+            this.$store.state.autoAllocation = data.autoAllocation;
+            this.$store.state.allocationRule = data.allocationRule;
+            this.$store.state.levelAlpha = data.levelAlpha;
+            this.$store.state.levelBeta = data.levelBeta;
+            this.$store.state.levelSigma = data.levelSigma;
+            this.$store.state.accountId = data.accountId;
+          }
+        })
+        .then(() => {
+          this.initializeLocalState();
+        });
+    },
+    async saveSettings() {
+      const request = {
+        id: this.$store.state.settingId,
+        currency: this.currency,
+        periodStart: this.period,
+        autoAllocation: this.autoAllocation,
+        allocationRule: this.allocationRule,
+        levelAlpha: this.alpha,
+        levelBeta: this.beta,
+        levelSigma: this.sigma,
+        accountId: this.$store.state.accountId,
+      };
+      this.axios
+        .post(`http://${this.$HOST}/setting/updateSettings`, request, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.data.data) {
+            this.fetchSetting().then((response) => {
+              this.$store.state.promptMsg = "updated!";
+              this.$store.state.promptBackground = "#399918";
+              this.$store.state.promptStatus = true;
+            });
+          } else {
+            this.$store.state.promptMsg = "request fail,try it later!";
+            this.$store.state.promptStatus = true;
+          }
+        });
+    },
+  },
+  data() {
+    return {
+      period: this.$store.state.periodStart,
+      autoAllocation: this.$store.state.autoAllocation,
+      allocationRule: this.$store.state.allocationRule,
+      alpha: this.$store.state.levelAlpha,
+      beta: this.$store.state.levelBeta,
+      sigma: this.$store.state.levelSigma,
+      currency: this.$store.state.currency,
+    };
+  },
+  // watch: {
+  //   states(now, old) {
+  //     debugger;
+  //     this.period = this.$store.state.periodStart;
+  //     this.autoAllocation = this.$store.state.autoAllocation;
+  //     this.allocationRule = this.$store.state.allocationRule;
+  //     this.alpha = this.$store.state.levelAlpha;
+  //     this.beta = this.$store.state.levelBeta;
+  //     this.sigma = this.$store.state.levelSigma;
+  //     this.currency = this.$store.state.currency;
+  //   },
+  // },
   computed: {
-    period() {
-      return this.$store.state.periodStart;
-    },
-    autoAllocation() {
-      return this.$store.state.autoAllocation;
-    },
-    allocationRule() {
-      return this.$store.state.allocationRule;
-    },
-    alpha() {
-      return this.$store.state.levelAlpha;
-    },
-    beta() {
-      return this.$store.state.levelBeta;
-    },
-    sigma() {
-      return this.$store.state.levelSigma;
-    },
+    // stateUpdate() {
+    //   return this.$store.state.settingUpdate;
+    // },
     evenMode() {
       return this.allocationRule == 1;
     },
@@ -166,9 +249,6 @@ export default {
     },
     username() {
       return this.$getCookie("username");
-    },
-    currency() {
-      return this.$store.state.currency;
     },
     day() {
       let day = this.period;

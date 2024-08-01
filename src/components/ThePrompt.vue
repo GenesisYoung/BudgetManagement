@@ -1,5 +1,7 @@
 <template>
-  <p class="prompt shadow">{{ message }}</p>
+  <p class="prompt shadow" :style="{ backgroundColor: background }">
+    {{ message }}
+  </p>
 </template>
 
 <script>
@@ -9,6 +11,10 @@ export default {
     message: {
       type: String,
       default: "default message",
+    },
+    background: {
+      type: String,
+      default: "#ff8080",
     },
   },
   data() {
@@ -39,7 +45,6 @@ export default {
   left: 35%;
   padding: 1rem;
   z-index: 999999;
-  background: #ff8080;
   border-radius: 1.5rem;
   color: wheat;
 }

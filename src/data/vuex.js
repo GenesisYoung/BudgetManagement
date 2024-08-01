@@ -1,16 +1,19 @@
 import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 const store = createStore({
   state() {
     return {
       // settings
+      settingId: 0,
       periodStart: "10",
       currency: "$",
-      autoAllocation: true,
+      autoAllocation: 1,
       allocationRule: 1,
       levelAlpha: 50,
       levelBeta: 30,
       levelSigma: 20,
+      accountId: 0,
       // auto
       // dashboard chart options
       fullChartOption: {},
@@ -23,6 +26,7 @@ const store = createStore({
       // prompt message
       promptMsg: "defalt alert!",
       promptStatus: false,
+      promptBackground: "#ff8080",
       promptCount: 1,
       dashboardPageAlpha: 1,
       dashboardPageBeta: 1,
@@ -62,6 +66,7 @@ const store = createStore({
       state.plans.push(plan);
     },
   },
+  plugins: [createPersistedState()],
 });
 
 export default store;

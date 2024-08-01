@@ -17,6 +17,9 @@ export default {
     promptStatus() {
       return this.$store.state.promptStatus;
     },
+    promptBackground() {
+      return this.$store.state.promptBackground;
+    },
   },
   methods: {
     acceptCookie() {
@@ -31,6 +34,7 @@ export default {
           if (response.data.data) {
             const data = response.data.data;
             console.log("auto allocation:");
+            this.$store.state.settingId = data.id;
             this.$store.state.periodStart = data.periodStart;
             this.$store.state.currency = data.currency;
             this.$store.state.autoAllocation = data.autoAllocation;
@@ -38,6 +42,7 @@ export default {
             this.$store.state.levelAlpha = data.levelAlpha;
             this.$store.state.levelBeta = data.levelBeta;
             this.$store.state.levelSigma = data.levelSigma;
+            this.$store.state.accountId = data.accountId;
           }
         });
     },
@@ -51,7 +56,11 @@ export default {
     <RouterView></RouterView>
   </section>
   <transition name="prompt">
-    <the-prompt v-if="promptStatus" :message="promptMsg"></the-prompt>
+    <the-prompt
+      v-if="promptStatus"
+      :message="promptMsg"
+      :background="promptBackground"
+    ></the-prompt>
   </transition>
   <div id="cookieConsent">
     This website uses cookies to ensure you get the best experience on our
